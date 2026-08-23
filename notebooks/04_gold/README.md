@@ -1,95 +1,36 @@
-# AdventureWorks Gold Layer
+# 04_gold
 
-This folder contains a simple, interview-friendly Gold layer for Databricks. The code is
-written at beginner to basic-intermediate level: clear transformations, readable Delta
-merges, no unnecessary hashes, and one explicit SCD Type 2 example.
+This folder contains the Gold-layer notebooks for the Smart Factory Data Platform.
 
-## What this package builds
+The Gold layer turns trusted Silver data into final reporting tables that are ready for analytics, dashboards, and business checks.
 
-| Table | Type | Grain |
-|---|---|---|
-| `dim_date` | Dimension | One calendar date |
-| `dim_product` | SCD Type 2 dimension | One product version |
-| `dim_customer` | Dimension | One customer |
-| `dim_supplier` | Dimension | One supplier |
-| `dim_work_center` | Dimension | One manufacturing location |
-| `fact_sales` | Fact | One sales-order line |
-| `fact_purchase_order` | Fact | One purchase-order line |
-| `fact_production` | Fact | One work order |
-| `fact_work_order_operation` | Fact | One work-order operation |
+## What this folder builds
 
-The package also creates five reporting tables:
+This folder creates:
 
-- `kpi_daily_sales`
-- `kpi_product_sales`
-- `kpi_supplier_performance`
-- `kpi_production_efficiency`
-- `kpi_operation_cost`
+* Dimension tables such as date, customer, supplier, work center, and product
+* Fact tables for sales, purchase orders, production, and work-order operations
+* KPI tables for reporting and business summaries
 
-## Architecture
+## What is in this folder
 
-```mermaid
-flowchart TB
-    S["Silver tables"] --> D["Gold dimensions"]
-    S --> F["Gold facts"]
-    D --> F
-    F --> K["KPI tables"]
-    K --> Q["Databricks SQL dashboard"]
-```
+* `00_config` stores shared settings for the Gold notebooks
+* `01_dim_date` to `09_fact_work_order_operation` build the main Gold dimensions and facts
+* `10_build_kpi_tables` creates KPI-style reporting tables
+* `11_dashboard_queries` contains queries used for dashboard-style analysis
+* `12_validate_gold` checks that the Gold outputs are correct
+* `13_run_all_gold` runs the full Gold stage in sequence
 
-## Run in Databricks
+## Why this layer matters
 
-1. Import the complete `04_gold` folder into one Databricks workspace folder.
-2. Confirm that the `smart_factory_dev.silver` tables already exist and contain data.
-3. Attach a cluster with Unity Catalog and Delta Lake support.
-4. Open and run `13_run_all_gold.py`.
-5. Confirm that `12_validate_gold.py` finishes with only `PASS` results.
+The Gold layer is the business-ready layer of the project.
 
-The run order is:
+It is the part of the platform that is easiest for reporting users, dashboard builders, and reviewers to understand.
 
-1. Date, customer, supplier, and work-center dimensions
-2. Product SCD Type 2 dimension
-3. Sales, purchase, production, and operation facts
-4. KPI tables
-5. Gold validation
+## When to use this folder
 
-## Product SCD Type 2
+Use this folder after the Silver notebooks have finished successfully.
 
-`05_dim_product_scd2.py` compares tracked columns with `eqNullSafe`. When a product
-attribute changes:
+## Summary
 
-1. The current version receives `IsCurrent = false`.
-2. Its `EffectiveTo` is set to the load timestamp.
-3. A new row is inserted with the next `ProductVersion`.
-4. The new version receives `IsCurrent = true` and `EffectiveTo = 9999-12-31`.
-
-The code intentionally avoids hashing so the comparison is easy to learn, debug, and
-explain in a junior Data Engineer interview.
-
-## Why there is no `fact_machine_operation` yet
-
-The supplied AdventureWorks Silver data contains `LocationID` in work-order routing but
-does not contain a real `MachineID`. Therefore this model truthfully creates
-`fact_work_order_operation` and `dim_work_center`. A later Event Hubs telemetry phase can
-add `dim_machine` and `fact_machine_operation` when real machine events are available.
-
-## Databricks SQL dashboard
-
-Open `11_dashboard_queries.sql` in Databricks SQL. Run each query, choose the suggested
-visual type in its comment, save the visualization, and add it to one dashboard. The file
-contains KPI cards, monthly sales, top products, supplier quality, production efficiency,
-and work-center cost variance.
-
-## Incremental behavior
-
-- Regular dimensions and facts use Delta `MERGE` on their documented business keys.
-- Existing matching rows are updated and new rows are inserted.
-- `dim_product` preserves changed versions with SCD Type 2 logic.
-- KPI tables are rebuilt because they are small reporting aggregates.
-
-## Important boundary
-
-This ZIP is the Gold-layer phase only. Lakeflow Jobs, Event Hubs streaming, Pytest in CI,
-Databricks Asset Bundles, failure-recovery demos, screenshots, and the final repository
-README belong to the next project phases. Keeping them separate makes this Gold code much
-easier to understand and troubleshoot.
+In short, this folder creates the final reporting tables that business users and dashboards can use with confidence.

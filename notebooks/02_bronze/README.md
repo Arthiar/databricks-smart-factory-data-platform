@@ -1,20 +1,26 @@
 # 02_bronze
 
-This folder loads the raw source files into Bronze Delta tables.
+This folder contains the Bronze-layer notebooks for the Smart Factory Data Platform.
 
-The goal of the Bronze layer is simple: keep the data close to the original source while adding basic ingestion metadata such as file information and load timestamps.
+The Bronze layer loads raw source files into Delta tables and keeps the data close to the original source.
 
-What is in this folder:
+## What is in this folder
 
-* `00_config` stores the shared settings used by all Bronze notebooks, such as source paths, checkpoint paths, target tables, and business keys.
-* `01_autoload_product` to `17_autoload_sales_order_detail` each load one source file into one Bronze table using Auto Loader.
-* `18_validate_bronze` runs a final check across all Bronze tables to confirm the loads completed and to check for duplicate business keys.
+* `00_config` stores the shared settings used by the Bronze notebooks
+* `01_autoload_product` to `17_autoload_sales_order_detail_fixed` load source files into Bronze tables
+* `18_validate_bronze` checks that the Bronze outputs were created correctly
+* `19_run_all_bronze` runs the full Bronze stage in sequence
 
-How to think about this folder:
+## Why this layer matters
 
-* One notebook usually equals one source entity.
-* Each notebook reads from the landing area.
-* Each notebook writes to a Bronze table in `smart_factory_dev.bronze`.
-* The data is kept mostly as-is so cleaning and business rules can happen later in Silver.
+The Bronze layer is the raw foundation of the project.
 
-Use this folder after the setup and ingestion steps are complete.
+It keeps ingestion simple and reliable so later layers can focus on cleaning, business rules, and reporting.
+
+## When to use this folder
+
+Use this folder after setup and ingestion are complete and before the Silver notebooks begin.
+
+## Summary
+
+In short, this folder brings raw source files into managed Bronze tables that can be trusted as the starting point for the rest of the pipeline.

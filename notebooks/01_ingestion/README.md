@@ -1,13 +1,18 @@
 # 01_ingestion
 
-This folder is about getting source data ready for loading.
+This folder prepares the source files for the Smart Factory pipeline.
 
-In simple terms, these notebooks bring files into the landing area and confirm that the files are there before the raw tables are created.
+The notebooks here bring the sample files into the landing area and confirm that the expected files are available before Bronze loading begins.
 
-What the notebooks do:
+## What is in this folder
 
-* `01_download_adventureworks_source` downloads the AdventureWorks source files and places them in the governed landing folders.
-* `02_verify_landing_files` checks that important files arrived and shows their sizes so you can confirm the download worked.
-* `12_autoload_product_vendor` looks like an early Bronze-style ingestion notebook for one source table. It helps show how a single file can be loaded with Auto Loader.
+* `01_download_adventureworks_source` downloads the AdventureWorks source files and places them in the project landing location
+* `02_verify_landing_files` checks that the important landing files are present and readable
 
-Use this folder after setup and before the full Bronze load. Its main job is to make sure the raw source files are available in the right place.
+## When to use this folder
+
+Use this folder after `00_setup` and before `02_bronze`.
+
+## Summary
+
+In short, this folder makes sure the source data is in the right place before the raw Bronze tables are created.
