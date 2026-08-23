@@ -1,13 +1,28 @@
 # 01_ingestion
 
-This folder is about getting source data ready for loading.
+## Recruiter overview
 
-In simple terms, these notebooks bring files into the landing area and confirm that the files are there before the raw tables are created.
+This folder shows how source data enters the project.
 
-What the notebooks do:
+It focuses on bringing files into the landing area and checking that the pipeline has the inputs it needs before transformation begins.
 
-* `01_download_adventureworks_source` downloads the AdventureWorks source files and places them in the governed landing folders.
-* `02_verify_landing_files` checks that important files arrived and shows their sizes so you can confirm the download worked.
-* `12_autoload_product_vendor` looks like an early Bronze-style ingestion notebook for one source table. It helps show how a single file can be loaded with Auto Loader.
+## What this folder demonstrates
 
-Use this folder after setup and before the full Bronze load. Its main job is to make sure the raw source files are available in the right place.
+This stage shows practical ingestion work, including:
+
+* collecting source files
+* placing them in the correct project location
+* validating that the files are ready for processing
+
+## Main notebooks
+
+* `01_download_adventureworks_source` downloads the source files into the project landing area
+* `02_verify_landing_files` checks that the expected files are present and readable
+
+## Why this stage matters
+
+This stage matters because a pipeline cannot produce reliable results if the input data is missing or incomplete.
+
+## Summary
+
+In short, this folder shows the first data movement step in the project: bringing source files into the platform in a controlled way.

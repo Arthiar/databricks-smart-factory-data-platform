@@ -1,113 +1,33 @@
-# Monitoring and Audit
+# 07_monitoring_audit
 
-This folder adds simple job-level monitoring to the Smart Factory Lakeflow Job. It
-creates one Delta record for every end-to-end pipeline run.
+## Recruiter overview
 
-## Audit table
+This folder shows the monitoring and audit side of the project.
 
-```text
-smart_factory_dev.monitoring.pipeline_audit
-```
+It tracks whether a full pipeline run started, succeeded, or failed, which helps make the workflow easier to operate and review.
 
-The table records:
+## What this folder demonstrates
 
-- Run ID
-- Job name
-- Trigger type
-- Start and end timestamps
-- Status: RUNNING, SUCCESS, or FAILED
-- Error message
-- Created and updated timestamps
+This stage shows practical operational work such as:
 
-Lakeflow already provides detailed task-level history. This custom table intentionally
-stores only the overall pipeline status and does not invent row-processing counts.
+* creating an audit table
+* logging pipeline start and finish events
+* recording success and failure outcomes
+* making pipeline runs easier to track over time
 
-## Initial setup
+## Main contents
 
-1. Import the complete `07_monitoring_audit` folder into Databricks.
-2. Attach the same compute used by the pipeline.
-3. Run `01_create_audit_table` once.
-4. Confirm that the audit table is created.
+* `00_config` stores shared settings
+* `01_create_audit_table` creates the audit table
+* `02_log_pipeline_start` records when a pipeline run begins
+* `03_log_pipeline_success` records a successful pipeline run
+* `04_log_pipeline_failure` records a failed pipeline run
+* `05_view_audit_history` shows the saved audit history
 
-## Update the Lakeflow Job
+## Why this stage matters
 
-### 1. Add audit_start
+This stage matters because a good pipeline should be monitored, not just executed. Audit logging makes the project easier to support and troubleshoot.
 
-Add a notebook task before Bronze:
+## Summary
 
-```text
-Task name: audit_start
-Notebook: 07_monitoring_audit/02_log_pipeline_start
-Depends on: None
-```
-
-Add these task parameters:
-
-```text
-job_run_id   = {{job.run_id}}
-job_name     = {{job.name}}
-trigger_type = {{job.trigger.type}}
-```
-
-Change `bronze_pipeline` so it depends on `audit_start`.
-
-### 2. Add audit_success
-
-```text
-Task name: audit_success
-Notebook: 07_monitoring_audit/03_log_pipeline_success
-Depends on: gold_pytest
-Run if dependencies: All succeeded
-```
-
-Add the same three task parameters:
-
-```text
-job_run_id   = {{job.run_id}}
-job_name     = {{job.name}}
-trigger_type = {{job.trigger.type}}
-```
-
-### 3. Add audit_failure
-
-```text
-Task name: audit_failure
-Notebook: 07_monitoring_audit/04_log_pipeline_failure
-Depends on: bronze_pipeline, silver_pipeline, gold_pipeline, gold_pytest
-Run if dependencies: At least one failed
-```
-
-Add these task parameters:
-
-```text
-job_run_id   = {{job.run_id}}
-job_name     = {{job.name}}
-trigger_type = {{job.trigger.type}}
-error_message = One or more pipeline tasks failed. Check the Lakeflow run details.
-```
-
-The failure notebook writes the FAILED audit record and then raises an error. This keeps
-the overall Lakeflow Job status failed instead of falsely showing success.
-
-## Final task graph
-
-```text
-audit_start
-    |
-bronze_pipeline
-    |
-silver_pipeline
-    |
-gold_pipeline
-    |
-gold_pytest
-   / \
-audit_success   audit_failure
-```
-
-Only one final audit task runs:
-
-- `audit_success` runs when the pipeline succeeds.
-- `audit_failure` runs when at least one pipeline task fails.
-
-After testing the job, run `05_view_audit_history` to view the saved audit records.
+In short, this folder shows how the project tracks pipeline runs in a clean and professional way.

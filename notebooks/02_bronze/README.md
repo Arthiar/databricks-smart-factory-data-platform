@@ -1,20 +1,31 @@
 # 02_bronze
 
-This folder loads the raw source files into Bronze Delta tables.
+## Recruiter overview
 
-The goal of the Bronze layer is simple: keep the data close to the original source while adding basic ingestion metadata such as file information and load timestamps.
+This folder shows the raw data loading stage of the project.
 
-What is in this folder:
+The Bronze layer is where source files are loaded into structured tables while still staying close to their original form.
 
-* `00_config` stores the shared settings used by all Bronze notebooks, such as source paths, checkpoint paths, target tables, and business keys.
-* `01_autoload_product` to `17_autoload_sales_order_detail` each load one source file into one Bronze table using Auto Loader.
-* `18_validate_bronze` runs a final check across all Bronze tables to confirm the loads completed and to check for duplicate business keys.
+## What this folder demonstrates
 
-How to think about this folder:
+This stage shows practical data engineering work such as:
 
-* One notebook usually equals one source entity.
-* Each notebook reads from the landing area.
-* Each notebook writes to a Bronze table in `smart_factory_dev.bronze`.
-* The data is kept mostly as-is so cleaning and business rules can happen later in Silver.
+* loading source files into Delta tables
+* organizing raw data by entity
+* using shared configuration for repeatable processing
+* validating that raw loads completed correctly
 
-Use this folder after the setup and ingestion steps are complete.
+## Main contents
+
+* `00_config` stores shared Bronze settings
+* `01_autoload_product` to `17_autoload_sales_order_detail_fixed` load individual source entities into Bronze tables
+* `18_validate_bronze` checks the Bronze outputs
+* `19_run_all_bronze` runs the full Bronze stage
+
+## Why this stage matters
+
+This stage matters because it creates the reliable raw data base that later cleaning and business modeling depend on.
+
+## Summary
+
+In short, this folder shows how raw source data is turned into a stable Bronze layer for the rest of the project.

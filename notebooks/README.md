@@ -1,17 +1,67 @@
-# Notebooks Overview
+# Notebooks Folder
 
-This folder contains the notebooks used to set up and load the Smart Factory data platform.
+## Recruiter overview
 
-The notebooks are grouped by stage so it is easier to understand what happens first and what happens next.
+This folder contains the main project work.
 
-* `00_setup` prepares the Databricks environment. It creates the storage connection, catalog, schemas, and volumes that the project needs before any data can be loaded.
-* `01_ingestion` brings source files into the landing area and checks that the files are available.
-* `02_bronze` loads the raw source files into Bronze Delta tables with Auto Loader and keeps the original source values for later processing.
+If the main README explains the project at a high level, this folder shows how the work is actually organized from setup to final validation.
 
-Recommended reading and run order:
+## What this folder demonstrates
 
-1. Start with `00_setup`.
-2. Move to `01_ingestion`.
-3. Finish with `02_bronze`.
+A recruiter can read this folder as a step-by-step view of the pipeline lifecycle:
 
-In short, this folder shows the early part of the data platform journey: prepare the environment, bring in the files, and store the raw data in Bronze tables.
+* environment setup
+* source data ingestion
+* raw-to-clean transformation
+* business-ready modeling
+* reporting
+* testing
+* monitoring
+* incremental load demonstration
+
+## Folder guide
+
+### `00_setup`
+Shows how the project environment is prepared before any data is processed.
+
+### `01_ingestion`
+Shows how source files are brought into the platform and checked.
+
+### `02_bronze`
+Shows how raw files are loaded into structured Bronze tables.
+
+### `03_silver`
+Shows how raw data is cleaned and standardized.
+
+### `04_gold`
+Shows how final reporting tables are built for business use.
+
+### `05_sql_dashboards`
+Shows reporting-focused SQL work built on top of the Gold layer.
+
+### `06_pytest`
+Shows automated testing for important Gold-layer outputs.
+
+### `07_monitoring_audit`
+Shows how pipeline run status is tracked and logged.
+
+### `08_incremental_load_demo`
+Shows a simple example of how a new file can move through the pipeline after the initial load.
+
+## Suggested reading order
+
+For a quick understanding of the project, review the folders in this order:
+
+1. `00_setup`
+2. `01_ingestion`
+3. `02_bronze`
+4. `03_silver`
+5. `04_gold`
+6. `05_sql_dashboards`
+7. `06_pytest`
+8. `07_monitoring_audit`
+9. `08_incremental_load_demo`
+
+## Summary
+
+In short, this folder is the main proof of the engineering work. It shows the full journey from raw data to trusted reporting outputs in a clear, reviewable structure.
