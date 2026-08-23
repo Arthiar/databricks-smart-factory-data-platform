@@ -1,32 +1,37 @@
 # 05_sql_dashboards
 
-This folder contains SQL notebooks for reporting, dashboard queries, and data checks.
+## Recruiter overview
 
-These notebooks are built on top of the Gold layer and are meant for business-friendly analysis.
+This folder shows the reporting side of the project.
 
-## What is in this folder
+It contains SQL notebooks that use the final Gold tables to answer business questions in a way that is easy to review and explain.
 
-* `00_data_checks` verifies that the reporting data is ready to use
-* `01_executive_sales` focuses on sales summary reporting
-* `02_procurement_suppliers` focuses on supplier and procurement analysis
-* `03_production_operations` focuses on production and work-order activity
-* `04_dashboard_validation` helps confirm that the reporting outputs are correct
-* `05_product_overview` focuses on product-level reporting
+## What this folder demonstrates
+
+This stage shows practical reporting work such as:
+
+* writing SQL for business reporting
+* organizing analysis by topic
+* validating reporting outputs
+* turning data models into dashboard-ready queries
+
+## Main contents
+
+* `00_data_checks` checks that reporting data is ready
+* `01_executive_sales` focuses on sales reporting
+* `02_procurement_suppliers` focuses on supplier and procurement reporting
+* `03_production_operations` focuses on production activity
+* `04_dashboard_validation` checks the reporting outputs
+* `05_product_overview` focuses on product reporting
 * `06_sales_order_overview` focuses on sales order reporting
 * `07_customer_overview` focuses on customer reporting
 * `08_vendor_overview` focuses on vendor reporting
-* `09_facts_and_figures` brings together summary-level facts and business figures
+* `09_facts_and_figures` brings together summary business figures
 
-## Why this folder matters
+## Why this stage matters
 
-This folder shows how trusted Gold data can be turned into useful business queries.
-
-It helps analysts, managers, and reviewers understand the main outputs of the project without reading the full transformation logic.
-
-## When to use this folder
-
-Use this folder after the Gold notebooks have finished successfully.
+This stage matters because it connects the engineering work to visible business reporting and makes the final value of the pipeline easier to understand.
 
 ## Summary
 
-In short, this folder is where the project becomes easy to explore from a reporting point of view.
+In short, this folder shows how the project supports reporting, dashboards, and business-facing analysis.

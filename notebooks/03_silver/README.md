@@ -1,45 +1,31 @@
 # 03_silver
 
-This folder contains the Silver-layer notebooks for the Smart Factory Data Platform.
+## Recruiter overview
 
-The Silver layer takes the raw Bronze data and turns it into cleaner, more consistent tables that are easier to use.
+This folder shows the data cleaning and standardization stage of the project.
 
-## What this folder does
+The Silver layer takes raw Bronze data and turns it into cleaner, more reliable tables that are easier to use in downstream reporting.
 
-The notebooks in this folder:
+## What this folder demonstrates
 
-* Read data from the Bronze layer
-* Standardize important columns and data types
-* Apply cleaner table structures
-* Prepare trusted data for the Gold layer
+This stage shows practical transformation work such as:
 
-## What is in this folder
+* cleaning raw data
+* standardizing structures and columns
+* preparing trusted tables for business reporting
+* validating transformation outputs
 
-### `00_config`
-Stores shared settings used by the Silver notebooks.
+## Main contents
 
-### `01_silver_product_category` to `17_silver_sales_order_detail`
-Each notebook builds or updates one Silver table.
+* `00_config` stores shared Silver settings
+* `01_silver_product_category` to `17_silver_sales_order_detail` build the main Silver tables
+* `18_validate_silver` checks that the Silver outputs were created correctly
+* `19_run_all_silver` runs the full Silver stage
 
-### `18_validate_silver`
-Checks that the Silver tables were created correctly.
+## Why this stage matters
 
-### `19_run_all_silver`
-Runs the full Silver stage in sequence.
-
-## How to think about this layer
-
-The Silver layer is the clean and trusted middle layer of the project.
-
-It sits between:
-
-* Bronze, where data is still close to the source
-* Gold, where data is shaped for reporting and business use
-
-## When to use this folder
-
-Use this folder after the Bronze notebooks have finished successfully and before the Gold notebooks begin.
+This stage matters because business-ready reporting cannot be built directly on raw data. The Silver layer creates a cleaner and more dependable middle layer.
 
 ## Summary
 
-In short, this folder turns raw Bronze data into clean Silver tables that are ready for reporting, testing, and analytics.
+In short, this folder shows how raw tables are cleaned and organized into trusted Silver tables for later business use.

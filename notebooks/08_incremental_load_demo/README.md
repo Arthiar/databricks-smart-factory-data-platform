@@ -1,21 +1,27 @@
 # 08_incremental_load_demo
 
-This folder contains a small incremental-load demonstration for the Smart Factory Data Platform.
+## Recruiter overview
 
-It shows how a newly added customer file can move through the pipeline and appear in the target layers.
+This folder shows that the project can handle more than a one-time batch load.
 
-## What is in this folder
+It demonstrates how a new file can be introduced after the initial setup and then move through the pipeline.
 
-* `01_incremental_customer_999998` prepares and verifies a simple customer-based incremental load scenario
+## What this folder demonstrates
 
-## Why this folder matters
+This stage shows practical pipeline behavior such as:
 
-This folder is useful when you want to explain or demonstrate that the pipeline can handle a new file after the initial load.
+* handling new incoming data
+* processing incremental files
+* confirming that new data reaches later layers
 
-## When to use this folder
+## Main contents
 
-Use this folder only after the main setup, Bronze, Silver, and Gold process is already working.
+* `01_incremental_customer_999998` prepares and checks a simple incremental load example
+
+## Why this stage matters
+
+This stage matters because real projects usually receive new data over time, not only in one initial load.
 
 ## Summary
 
-In short, this folder provides a simple demo that helps show how incremental data can move through the Smart Factory pipeline.
+In short, this folder shows that the pipeline can process new incoming data after the first run.

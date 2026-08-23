@@ -1,30 +1,33 @@
 # 06_pytest
 
-This folder contains automated tests for the Gold layer of the Smart Factory Data Platform.
+## Recruiter overview
 
-The goal of this folder is to make sure the final reporting tables are reliable.
+This folder shows the testing part of the project.
 
-## What is in this folder
+It contains automated checks for the Gold layer so the final reporting tables are not only built, but also validated.
+
+## What this folder demonstrates
+
+This stage shows practical quality-focused work such as:
+
+* automated test execution
+* validation of key tables
+* validation of important relationships
+* validation of business rules in final outputs
+
+## Main contents
 
 * `00_run_pytest` runs the test suite
-* `conftest.py` stores shared test setup and fixtures
-* `pytest.ini` stores Pytest settings
-* `test_gold_tables.py` checks that important Gold tables exist and can be queried
-* `test_gold_relationships.py` checks important table relationships
-* `test_gold_business_rules.py` checks key business rules in the Gold layer
+* `conftest.py` stores shared test setup
+* `pytest.ini` stores test settings
+* `test_gold_tables.py` checks important Gold tables
+* `test_gold_relationships.py` checks important relationships
+* `test_gold_business_rules.py` checks business rules in the Gold layer
 
-## Why this folder matters
+## Why this stage matters
 
-Testing is important because it helps catch data issues before business users rely on the results.
-
-This folder adds a simple quality gate after the Gold notebooks run.
-
-## When to use this folder
-
-Use this folder after the Gold layer has been built.
-
-It can be run by itself during development or as part of the full Lakeflow Job.
+This stage matters because it shows that the project includes quality checks, not just transformations. That makes the final outputs more trustworthy.
 
 ## Summary
 
-In short, this folder helps confirm that the final reporting layer is correct, stable, and ready to use.
+In short, this folder shows how automated testing is used to protect the quality of the final reporting layer.

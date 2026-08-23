@@ -1,26 +1,31 @@
 # 02_bronze
 
-This folder contains the Bronze-layer notebooks for the Smart Factory Data Platform.
+## Recruiter overview
 
-The Bronze layer loads raw source files into Delta tables and keeps the data close to the original source.
+This folder shows the raw data loading stage of the project.
 
-## What is in this folder
+The Bronze layer is where source files are loaded into structured tables while still staying close to their original form.
 
-* `00_config` stores the shared settings used by the Bronze notebooks
-* `01_autoload_product` to `17_autoload_sales_order_detail_fixed` load source files into Bronze tables
-* `18_validate_bronze` checks that the Bronze outputs were created correctly
-* `19_run_all_bronze` runs the full Bronze stage in sequence
+## What this folder demonstrates
 
-## Why this layer matters
+This stage shows practical data engineering work such as:
 
-The Bronze layer is the raw foundation of the project.
+* loading source files into Delta tables
+* organizing raw data by entity
+* using shared configuration for repeatable processing
+* validating that raw loads completed correctly
 
-It keeps ingestion simple and reliable so later layers can focus on cleaning, business rules, and reporting.
+## Main contents
 
-## When to use this folder
+* `00_config` stores shared Bronze settings
+* `01_autoload_product` to `17_autoload_sales_order_detail_fixed` load individual source entities into Bronze tables
+* `18_validate_bronze` checks the Bronze outputs
+* `19_run_all_bronze` runs the full Bronze stage
 
-Use this folder after setup and ingestion are complete and before the Silver notebooks begin.
+## Why this stage matters
+
+This stage matters because it creates the reliable raw data base that later cleaning and business modeling depend on.
 
 ## Summary
 
-In short, this folder brings raw source files into managed Bronze tables that can be trusted as the starting point for the rest of the pipeline.
+In short, this folder shows how raw source data is turned into a stable Bronze layer for the rest of the project.

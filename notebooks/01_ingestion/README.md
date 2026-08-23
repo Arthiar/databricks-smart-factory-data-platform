@@ -1,18 +1,28 @@
 # 01_ingestion
 
-This folder prepares the source files for the Smart Factory pipeline.
+## Recruiter overview
 
-The notebooks here bring the sample files into the landing area and confirm that the expected files are available before Bronze loading begins.
+This folder shows how source data enters the project.
 
-## What is in this folder
+It focuses on bringing files into the landing area and checking that the pipeline has the inputs it needs before transformation begins.
 
-* `01_download_adventureworks_source` downloads the AdventureWorks source files and places them in the project landing location
-* `02_verify_landing_files` checks that the important landing files are present and readable
+## What this folder demonstrates
 
-## When to use this folder
+This stage shows practical ingestion work, including:
 
-Use this folder after `00_setup` and before `02_bronze`.
+* collecting source files
+* placing them in the correct project location
+* validating that the files are ready for processing
+
+## Main notebooks
+
+* `01_download_adventureworks_source` downloads the source files into the project landing area
+* `02_verify_landing_files` checks that the expected files are present and readable
+
+## Why this stage matters
+
+This stage matters because a pipeline cannot produce reliable results if the input data is missing or incomplete.
 
 ## Summary
 
-In short, this folder makes sure the source data is in the right place before the raw Bronze tables are created.
+In short, this folder shows the first data movement step in the project: bringing source files into the platform in a controlled way.

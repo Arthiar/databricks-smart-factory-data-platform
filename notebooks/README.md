@@ -1,53 +1,56 @@
 # Notebooks Folder
 
-This folder contains the main notebook-based workflow for the Smart Factory Data Platform.
+## Recruiter overview
 
-The notebooks are organized by stage so it is easy to follow the full project from setup to testing and monitoring.
+This folder contains the main project work.
+
+If the main README explains the project at a high level, this folder shows how the work is actually organized from setup to final validation.
+
+## What this folder demonstrates
+
+A recruiter can read this folder as a step-by-step view of the pipeline lifecycle:
+
+* environment setup
+* source data ingestion
+* raw-to-clean transformation
+* business-ready modeling
+* reporting
+* testing
+* monitoring
+* incremental load demonstration
 
 ## Folder guide
 
 ### `00_setup`
-Prepares the Databricks environment.
-
-This stage creates the external locations, catalog, schemas, and volumes that the project needs.
+Shows how the project environment is prepared before any data is processed.
 
 ### `01_ingestion`
-Brings the source files into the landing area.
-
-This stage downloads the sample data and checks that the required files are available before loading starts.
+Shows how source files are brought into the platform and checked.
 
 ### `02_bronze`
-Loads raw source files into Bronze Delta tables.
-
-This stage keeps the source data close to its original form and adds ingestion metadata.
+Shows how raw files are loaded into structured Bronze tables.
 
 ### `03_silver`
-Cleans and standardizes the Bronze data.
-
-This stage applies business-friendly structure so the data is ready for reporting and analytics.
+Shows how raw data is cleaned and standardized.
 
 ### `04_gold`
-Builds the final reporting tables.
-
-This stage creates dimensions, facts, and KPI-style outputs for analytics and dashboards.
+Shows how final reporting tables are built for business use.
 
 ### `05_sql_dashboards`
-Contains SQL notebooks used for analysis and dashboard-style reporting.
+Shows reporting-focused SQL work built on top of the Gold layer.
 
 ### `06_pytest`
-Contains automated tests for the Gold layer.
-
-These tests help confirm that important tables, relationships, and business rules are correct.
+Shows automated testing for important Gold-layer outputs.
 
 ### `07_monitoring_audit`
-Contains notebooks for logging pipeline start, success, and failure events.
+Shows how pipeline run status is tracked and logged.
 
 ### `08_incremental_load_demo`
-Contains a small demo that shows how a newly arrived file moves through the pipeline.
+Shows a simple example of how a new file can move through the pipeline after the initial load.
 
-## Recommended order
+## Suggested reading order
 
-If you are new to the project, use this order:
+For a quick understanding of the project, review the folders in this order:
 
 1. `00_setup`
 2. `01_ingestion`
@@ -61,4 +64,4 @@ If you are new to the project, use this order:
 
 ## Summary
 
-In short, this folder is the heart of the project. It contains the notebooks that build, test, and monitor the Smart Factory data platform.
+In short, this folder is the main proof of the engineering work. It shows the full journey from raw data to trusted reporting outputs in a clear, reviewable structure.

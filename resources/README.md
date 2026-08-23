@@ -1,34 +1,27 @@
 # Resources Folder
 
-This folder contains the deployment resources for the Smart Factory Data Platform.
+## Recruiter overview
 
-The files here describe what Databricks should create or run when the project is deployed.
+This folder shows the deployment and orchestration side of the project.
 
-## What is in this folder
+It contains the configuration used to run the project in a repeatable way instead of relying only on manual notebook execution.
 
-### `smart_factory_job.yml`
-This file defines the main Lakeflow Job for the project.
+## What this folder demonstrates
 
-The job runs the pipeline in this order:
+This folder shows practical project delivery work such as:
 
-1. Start audit logging
-2. Run the Bronze notebooks
-3. Run the Silver notebooks
-4. Run the Gold notebooks
-5. Run the Pytest checks
-6. Write success or failure audit records
+* defining a repeatable job flow
+* connecting multiple pipeline stages in order
+* keeping deployment configuration in source control
+
+## Main contents
+
+* `smart_factory_job.yml` defines the main Lakeflow Job and the task sequence for the pipeline
 
 ## Why this folder matters
 
-This folder helps turn the project from a set of notebooks into a repeatable deployment.
-
-Instead of creating jobs by hand every time, the YAML file keeps the job definition in source control so it is easier to review, reuse, and maintain.
-
-## Related files
-
-* `../databricks.yml` contains the main bundle settings
-* `../notebooks/` contains the notebooks used by the job
+This folder matters because it shows that the project is organized for repeatable execution, not just one-time development work.
 
 ## Summary
 
-In short, this folder stores the deployment-ready job configuration for the full Smart Factory pipeline.
+In short, this folder shows how the Smart Factory pipeline can be run in a structured and repeatable way.
