@@ -1,0 +1,71 @@
+resources:
+  jobs:
+    smart_factory_pipeline:
+      name: "[${bundle.target}] Smart Factory Medallion Pipeline"
+      description: "Basic bundle deployment for the Smart Factory project"
+      max_concurrent_runs: 1
+
+      tasks:
+        - task_key: audit_start
+          existing_cluster_id: ${var.existing_cluster_id}
+          notebook_task:
+            notebook_path: ../notebooks/07_monitoring_audit/02_log_pipeline_start.py
+            base_parameters:
+              job_run_id: "{{job.run_id}}"
+              job_name: "{{job.name}}"
+              trigger_type: bundle_manual
+
+        - task_key: bronze_pipeline
+          depends_on:
+            - task_key: audit_start
+          existing_cluster_id: ${var.existing_cluster_id}
+          notebook_task:
+            notebook_path: ../notebooks/02_bronze/19_run_all_bronze.py
+
+        - task_key: silver_pipeline
+          depends_on:
+            - task_key: bronze_pipeline
+          existing_cluster_id: ${var.existing_cluster_id}
+          notebook_task:
+            notebook_path: ../notebooks/03_silver/19_run_all_silver.py
+
+        - task_key: gold_pipeline
+          depends_on:
+            - task_key: silver_pipeline
+          existing_cluster_id: ${var.existing_cluster_id}
+          notebook_task:
+            notebook_path: ../notebooks/04_gold/13_run_all_gold.py
+
+        - task_key: gold_pytest
+          depends_on:
+            - task_key: gold_pipeline
+          existing_cluster_id: ${var.existing_cluster_id}
+          notebook_task:
+            notebook_path: ../notebooks/06_pytest/00_run_pytest.py
+
+        - task_key: audit_success
+          depends_on:
+            - task_key: gold_pytest
+          existing_cluster_id: ${var.existing_cluster_id}
+          notebook_task:
+            notebook_path: ../notebooks/07_monitoring_audit/03_log_pipeline_success.py
+            base_parameters:
+              job_run_id: "{{job.run_id}}"
+              job_name: "{{job.name}}"
+              trigger_type: bundle_manual
+
+        - task_key: audit_failure
+          depends_on:
+            - task_key: bronze_pipeline
+            - task_key: silver_pipeline
+            - task_key: gold_pipeline
+            - task_key: gold_pytest
+          run_if: AT_LEAST_ONE_FAILED
+          existing_cluster_id: ${var.existing_cluster_id}
+          notebook_task:
+            notebook_path: ../notebooks/07_monitoring_audit/04_log_pipeline_failure.py
+            base_parameters:
+              job_run_id: "{{job.run_id}}"
+              job_name: "{{job.name}}"
+              trigger_type: bundle_manual
+              error_message: "One or more bundle tasks failed. Check the Lakeflow run details."

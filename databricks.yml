@@ -1,0 +1,21 @@
+bundle:
+  name: smart_factory_data_platform
+
+include:
+  - resources/*.yml
+
+variables:
+  existing_cluster_id:
+    description: Existing Databricks cluster
+    default: 0822-153900-cj54qc5c
+
+workspace:
+  root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
+
+targets:
+  dev:
+    default: true
+    mode: development
+    
+  prod:
+    mode: production
