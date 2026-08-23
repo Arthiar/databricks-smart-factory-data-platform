@@ -1,0 +1,240 @@
+# Runbook - how to set up and run this project
+
+This is the practical guide. The README explains what the project is. This file
+explains how to get it running from nothing.
+
+Expect about 45 minutes for the first setup and about 9 minutes for a full
+pipeline run after that.
+
+---
+
+## 1. What you need first
+
+| Requirement | Notes |
+|---|---|
+| Azure subscription | The storage account and access connector live here |
+| Azure Databricks workspace | Premium tier, Unity Catalog enabled |
+| ADLS Gen2 storage account | Hierarchical namespace turned on |
+| Unity Catalog metastore | One per region, attached to the workspace |
+| Databricks CLI | Version 0.2xx or newer, for bundle deployment |
+| GitHub repository | Only needed for the CI/CD part |
+
+You also need permission to create a catalog, an external location and a storage
+credential in Unity Catalog. In a company workspace this is usually a metastore
+admin. On your own subscription you already have it.
+
+---
+
+## 2. Azure setup, done once
+
+1. Create a storage account with hierarchical namespace enabled. This project
+   uses `stsfactorydev2026`.
+2. Create a container inside it. This project uses `smart-factory-dev`.
+3. Create an Azure Databricks access connector and give it the
+   **Storage Blob Data Contributor** role on the storage account.
+4. In Databricks, create a storage credential pointing at that access connector.
+   This project uses `sc-smart-factory-dev`.
+
+If you use different names, change them in these files:
+
+- `notebooks/00_setup/01_create_external_locations.py`
+- `notebooks/00_setup/02_create_catalog_and_schemas.sql`
+- `notebooks/00_setup/03_create_volumes.sql`
+- the `CATALOG` value in every `00_config` notebook
+
+---
+
+## 3. Get the code into the workspace
+
+Either clone the repository through **Workspace > Repos > Add repo**, or deploy
+the bundle from your machine:
+
+```bash
+git clone https://github.com/<your-user>/databricks-smart-factory-data-platform.git
+cd databricks-smart-factory-data-platform
+
+export DATABRICKS_HOST=https://adb-xxxxxxxx.azuredatabricks.net
+export DATABRICKS_TOKEN=dapi...
+
+databricks bundle validate -t dev
+databricks bundle deploy -t dev
+```
+
+`databricks.yml` has a variable called `existing_cluster_id`. Change its default
+to your own cluster id, or pass it at deploy time:
+
+```bash
+databricks bundle deploy -t dev --var="existing_cluster_id=0000-000000-abcdefgh"
+```
+
+Use a small all purpose cluster with Databricks Runtime 14.3 LTS or newer.
+
+---
+
+## 4. One time setup notebooks
+
+Run these in order, once. Attach each to your cluster and use **Run all**.
+
+| Order | Notebook | What it creates |
+|---|---|---|
+| 1 | `00_setup/01_create_external_locations.py` | External location `ext_smart_factory_dev` |
+| 2 | `00_setup/02_create_catalog_and_schemas.sql` | Catalog `smart_factory_dev` and the schemas `raw`, `bronze`, `silver`, `gold`, `quarantine`, `monitoring` |
+| 3 | `00_setup/03_create_volumes.sql` | Volumes `landing_files`, `checkpoint_files`, `archive_files`, `quarantine_files` and the landing folder tree |
+| 4 | `07_monitoring_audit/01_create_audit_table.py` | The audit table used by the job |
+
+Check it worked:
+
+```sql
+SHOW SCHEMAS IN smart_factory_dev;
+SHOW VOLUMES IN smart_factory_dev.raw;
+```
+
+---
+
+## 5. Load the source files
+
+Run `01_ingestion/01_download_adventureworks_source.py`.
+
+It downloads 17 AdventureWorks files from the Microsoft `sql-server-samples`
+GitHub repository into
+`/Volumes/smart_factory_dev/raw/landing_files/batch/erp/<area>/<entity>/`.
+
+The files are tab separated with no header row. That is why the Auto Loader
+options use `sep: "\t"` and `header: "false"`.
+
+Then run `01_ingestion/02_verify_landing_files.py` and confirm you see 17 files.
+
+---
+
+## 6. Run the pipeline
+
+### Option A, the job (recommended)
+
+Open **Jobs & Pipelines**, find `[dev] Smart Factory Medallion Pipeline` and
+click **Run now**. It runs seven tasks in order and takes about 9 minutes on a
+small cluster.
+
+To make it run by itself when new data lands, add a file arrival trigger on
+`/Volumes/smart_factory_dev/raw/landing_files/batch/erp`.
+
+### Option B, notebook by notebook
+
+Useful when you are debugging one layer.
+
+```
+02_bronze/19_run_all_bronze.py
+03_silver/19_run_all_silver.py
+04_gold/13_run_all_gold.py
+06_pytest/00_run_pytest.py
+```
+
+Each `run_all` notebook calls the individual notebooks with `%run`, in dependency
+order.
+
+Before running `00_run_pytest.py`, open it and change `test_folder` to your own
+workspace path. It is currently hardcoded to one user.
+
+---
+
+## 7. Check the run
+
+```sql
+-- audit history
+SELECT * FROM smart_factory_dev.monitoring.<audit_table> ORDER BY 1 DESC LIMIT 20;
+
+-- row counts
+SELECT 'bronze' AS layer, count(*) FROM smart_factory_dev.bronze.customer
+UNION ALL
+SELECT 'silver', count(*) FROM smart_factory_dev.silver.customer;
+
+-- anything quarantined
+SHOW TABLES IN smart_factory_dev.silver LIKE '*quarantine*';
+
+-- SCD Type 2 sanity check, should return zero rows
+SELECT ProductID, count(*) AS current_rows
+FROM smart_factory_dev.gold.dim_product
+WHERE IsCurrent = true
+GROUP BY ProductID
+HAVING count(*) > 1;
+```
+
+There are also validate notebooks per layer: `02_bronze/18_validate_bronze.py`,
+`03_silver/18_validate_silver.py`, `04_gold/12_validate_gold.py`.
+
+---
+
+## 8. Try an incremental load
+
+Run `08_incremental_load_demo/01_incremental_customer_999998.py`.
+
+It adds one customer record to the landing folder, runs the layers, and compares
+row counts before and after. Bronze, Silver and Gold should each go up by the
+same amount, and the notebook raises an error if any layer did not move.
+
+This is the fastest way to show that Auto Loader is genuinely incremental instead
+of reloading everything.
+
+---
+
+## 9. Build the dashboard
+
+The SQL behind each page is in `notebooks/05_sql_dashboards/`:
+
+| File | Dashboard page |
+|---|---|
+| `09_facts_and_figures.sql` | Facts and figures |
+| `01_executive_sales.sql`, `06_sales_order_overview.sql` | Sales and orders |
+| `05_product_overview.sql`, `07_customer_overview.sql` | Products and customers |
+| `02_procurement_suppliers.sql`, `08_vendor_overview.sql` | Procurement and vendors |
+| `03_production_operations.sql` | Production and operations |
+
+Create a Databricks SQL dashboard, add a dataset per query, and point it at a
+SQL warehouse. Run `00_data_checks.sql` and `04_dashboard_validation.sql` first
+if the numbers look wrong.
+
+---
+
+## 10. Common problems
+
+**`PERMISSION_DENIED` on the external location.** The access connector does not
+have Storage Blob Data Contributor on the storage account, or the storage
+credential name in the notebook does not match the one in Unity Catalog.
+
+**Auto Loader reads nothing.** The checkpoint already recorded the files. To
+reload from scratch, delete the checkpoint folder for that entity:
+
+```python
+dbutils.fs.rm("/Volumes/smart_factory_dev/raw/checkpoint_files/bronze/product", True)
+```
+
+**Bronze row counts look wrong.** The files have no header row. If `header` is
+set to `true` anywhere, the first data row is eaten as column names.
+
+**pytest cannot find the tests.** `test_folder` in `06_pytest/00_run_pytest.py`
+is an absolute workspace path tied to one user. Change it to yours.
+
+**`audit_failure` runs but the job shows success.** It should not. If it does,
+check that the failure notebook still raises at the end instead of only printing.
+
+**Bundle deploy fails on the cluster id.** The default in `databricks.yml` points
+at a cluster that no longer exists. Pass your own with `--var`.
+
+---
+
+## 11. Cleaning up
+
+Cost comes almost entirely from the cluster. Set auto termination to 10 to 20
+minutes.
+
+To remove everything:
+
+```bash
+databricks bundle destroy -t dev
+```
+
+```sql
+DROP CATALOG IF EXISTS smart_factory_dev CASCADE;
+```
+
+Then delete the storage container in Azure. Dropping the catalog does not delete
+files in external locations.
